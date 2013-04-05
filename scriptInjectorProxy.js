@@ -39,18 +39,19 @@ httpProxy.createServer(function(req, res, proxy) {
       dest = params.dest || 'localhost',
       destination;
 
-  dest = dest.match(/^http/) ? dest : 'http://' + dest;
-  destination = url.parse(dest, true);
+  console.log(req.headers.host);
+  
+  // dest = dest.match(/^http/) ? dest : 'http://' + dest;
+  // destination = url.parse(dest, true);
 
-  req.headers['host'] = destination.host;
-  req.url = destination.path;
+  // req.headers['host'] = destination.host;
+  // req.url = destination.path;
 //  req.headers['url'] = destination.href;
 
   // console.log(dest);
   // console.log("-------------------------------------------");
   // console.log(destination);
 
-  // console.log(req.headers);
 
   // We don't want to deal with gzip...
   delete req.headers['accept-encoding'];
@@ -61,25 +62,28 @@ httpProxy.createServer(function(req, res, proxy) {
   }
 
   res.write = function(data, encoding) {
-    if (isHtml && params.dest) {
-      var str = data.toString();
-      var scriptTag = '<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.min.js"></script>';
-      var baseTag = '<base href="' + (dest.replace(/\/$/, '') || '') + '"/>';
-      // console.log(str);
-      // console.log("\n----------------------------------------------------------\n");
+    
+    if (isHtml) {
+      
+      var body = data.toString(),
+      scriptTag = "<script>alert('abcd');</script>",
+      baseTag = '<base href="' + (dest.replace(/\/$/, '') || '') + '"/>';
+      // console.log(body);
+      // console.log("\n-------------------------------\n");
 
-      str = str.replace(/(<head[^>]*>)/, "$1" + "\n" + scriptTag + "\n" + baseTag);
+      body = body.replace(/(<head[^>]*>)/, "$1" + "\n" + scriptTag + "\n" + baseTag);
 
-      data = new Buffer(str);
+      data = new Buffer(body);
     }
 
     write.call(this, data, encoding);
   };
 
   proxy.proxyRequest(req, res, {
-    host: destination.host,
+    host: req.headers.host,
     port: 80,
   });
-}).listen(9000, function () {
+  
+}).listen(1337, function () {
   console.log("Waiting for requests...");
 });
