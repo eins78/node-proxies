@@ -30,6 +30,10 @@
 var httpProxy = require('http-proxy');
 var url = require('url');
 
+var config = {};
+config.port = "80";
+config.ip = "0.0.0.0";
+
 httpProxy.createServer(function(req, res, proxy) {
 
   var isHtml = false,
@@ -84,6 +88,6 @@ httpProxy.createServer(function(req, res, proxy) {
     port: 80,
   });
   
-}).listen(1337, function () {
+}).listen(config.port, config.ip, function () {
   console.log("Waiting for requests...");
 });
