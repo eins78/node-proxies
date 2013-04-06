@@ -70,7 +70,7 @@ httpProxy.createServer(function(req, res, proxy) {
     if (isHtml) {
       
       var body = data.toString(),
-      scriptTag = "<script>alert('abcd');</script>",
+      scriptTag = "<script>alert('Hello from the proxy!');</script>",
       baseTag = '<base href="' + (dest.replace(/\/$/, '') || '') + '"/>';
       // console.log(body);
       // console.log("\n-------------------------------\n");
